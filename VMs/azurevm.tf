@@ -85,14 +85,17 @@ resource "azurerm_linux_virtual_machine" "davinder-automate" {
       "X-Customer" = "self"
       "x-owner" = "davinder.singh@progress.com"
     }
-    admin_ssh_key {
-        username = "adminuser"
-        public_key = file("/Users/dasingh/.ssh/ysingh.pub")
-    }
+    # admin_ssh_key {
+    #     username = "adminuser"
+    #     public_key = file("/Users/dasingh/.ssh/ysingh.pub")
+    # }
+    admin_password = "Welcome@axainfotech123"
+    disable_password_authentication = false
     os_disk {
         caching = "ReadWrite"
         storage_account_type = "Standard_LRS"
     }
+    
     source_image_reference {
         publisher = "OpenLogic"
         offer = "CentOS"
@@ -100,5 +103,39 @@ resource "azurerm_linux_virtual_machine" "davinder-automate" {
         version = "latest"
         
     }
-  
+#     connection {
+#        type = "ssh"
+#        user = "adminuser"
+#        password = "Welcome@axainfotech123"
+#        host = azurerm_public_ip.davinder-mypublic-ip.ip_address
+#        port = 22
+     
+#    }
+provisioner "file" {
+    source = "webserver.sh"
+    destination = "/tmp/webserver.sh"
+    connection {
+        type = "ssh"
+        user = "adminuser"
+        host = azurerm_public_ip.davinder-mypublic-ip.fqdn
+        password = "Welcome@axainfotech123"
+      
+    }
+
+}
+    
+#    provisioner "remote-exec" {
+#        inline = [
+#          "/bin/bash /tmp/webserver.sh"
+#        ]
+#        connection {
+#        type = "ssh"
+#        user = "adminuser"
+#        password = "Welcome@axainfotech123"
+#        host = azurerm_public_ip.davinder-mypublic-ip.ip_address
+#        port = 22
+     
+#    }
+#    } 
+ 
 }
